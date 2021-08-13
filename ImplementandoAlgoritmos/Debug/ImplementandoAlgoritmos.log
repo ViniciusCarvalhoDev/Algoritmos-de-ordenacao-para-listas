@@ -1,0 +1,5 @@
+﻿  ImplementandoAlgoritmos.cpp
+C:\Users\Vinicius\source\repos\ImplementandoAlgoritmos\ImplementandoAlgoritmos\ImplementandoAlgoritmos.cpp(10,27): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Vinicius\source\repos\ImplementandoAlgoritmos\ImplementandoAlgoritmos\ImplementandoAlgoritmos.cpp(25,27): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Vinicius\source\repos\ImplementandoAlgoritmos\ImplementandoAlgoritmos\ImplementandoAlgoritmos.cpp(41,27): warning C4018: '<': incompatibilidade de signed/unsigned
+  ImplementandoAlgoritmos.vcxproj -> C:\Users\Vinicius\source\repos\ImplementandoAlgoritmos\Debug\ImplementandoAlgoritmos.exe
