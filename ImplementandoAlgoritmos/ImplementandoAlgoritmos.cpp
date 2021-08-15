@@ -49,30 +49,12 @@ void trocar(int i, int j, Fila<Linha> *lista)
     item2->dado.dados = aux2;
 }
 
-void trocarInt(int i, int j, Fila<Linha>* lista)
+int partir(Fila<Linha> *lista, int menor, int maior)
 {
-    Celula<Linha>* item1 = lista->RecuperaPonteiro(i);
-    Celula<Linha>* item2 = lista->RecuperaPonteiro(j);
+    std::string pivot = lista->RecuperaPonteiro(maior)->dado.nome; 
+    int i = (menor - 1);  
 
-    int aux;
-    std::string aux2;
-
-    aux = item1->dado.dados;
-    aux2 = item1->dado.nome;
-
-    item1->dado.dados = item2->dado.dados;
-    item1->dado.nome = item2->dado.nome;
-
-    item2->dado.dados = aux;
-    item2->dado.nome = aux2;
-}
-
-int partition(Fila<Linha> *lista, int low, int high)
-{
-    std::string pivot = lista->RecuperaPonteiro(high)->dado.nome; 
-    int i = (low - 1);  
-
-    for (int j = low; j <= high - 1; j++)
+    for (int j = menor; j <= maior - 1; j++)
     {
         Linha aux = lista->RecuperaPonteiro(j)->dado;
         if (compara(aux.nome, pivot) == true)
@@ -81,86 +63,87 @@ int partition(Fila<Linha> *lista, int low, int high)
             trocar(i,j, lista);
         }
     }
-    trocar(i + 1,high,lista);
+    trocar(i + 1,maior,lista);
     return (i + 1);
 }
 
 
-void quickSort(Fila<Linha> *lista, int low, int high)
+void quickSort(Fila<Linha> *lista, int menor, int maior)
 {
-    if (low < high)
+    if (menor < maior)
     {
-        
-        int pi = partition(lista, low, high);
+        int pi = partir(lista, menor, maior);
 
-        quickSort(lista, low, pi - 1);
-        quickSort(lista, pi + 1, high);
+        quickSort(lista, menor, pi - 1);
+        quickSort(lista, pi + 1, maior);
     }
 }
 
-void merge(Fila<Linha>* lista, int const left, int const mid, int const right)
-{
-    int const subArrayOne = mid - left + 1;
-    int const subArrayTwo = right - mid;
+//--------- merge sort
 
+void merge(Fila<Linha>* lista, int  esq, int meio, int  direito)
+{
     Fila<std::string> lista1;
     Fila<int> lista1Int;
 
     Fila<std::string> lista2;
     Fila<int> lista2Int;
 
-    for (auto i = 0; i < subArrayOne; i++) {
-        lista1.Enfileirar(lista->RecuperaPonteiro(left + i)->dado.nome);
-        lista1Int.Enfileirar(lista->RecuperaPonteiro(left + i)->dado.dados);
+    int  subLista1 = meio - esq + 1;
+    int  subLista2 = direito - meio;
+
+    for (auto i = 0; i < subLista1; i++) {
+        lista1.Enfileirar(lista->RecuperaPonteiro(esq + i)->dado.nome);
+        lista1Int.Enfileirar(lista->RecuperaPonteiro(esq + i)->dado.dados);
     }
-    for (auto j = 0; j < subArrayTwo; j++){
-        lista2.Enfileirar(lista->RecuperaPonteiro(mid + 1 + j)->dado.nome);
-        lista2Int.Enfileirar(lista->RecuperaPonteiro(mid + 1 +j)->dado.dados);
+    for (auto j = 0; j < subLista2; j++){
+        lista2.Enfileirar(lista->RecuperaPonteiro(meio + 1 + j)->dado.nome);
+        lista2Int.Enfileirar(lista->RecuperaPonteiro(meio + 1 +j)->dado.dados);
     }
 
-    auto indexOfSubArrayOne = 0,
-        indexOfSubArrayTwo = 0; 
-    int indexOfMergedArray = left; 
+    int indiceSubLista1 = 0,
+        indiceSubLista2 = 0;
+    int indiceListaMeio = esq; 
 
 
-    while (indexOfSubArrayOne < subArrayOne && indexOfSubArrayTwo < subArrayTwo) {
-        if (compara(lista1.Recupera(indexOfSubArrayOne), lista2.Recupera(indexOfSubArrayTwo)) == true) {
-            lista->RecuperaPonteiro(indexOfMergedArray)->dado.nome = lista1.Recupera(indexOfSubArrayOne);
-            lista->RecuperaPonteiro(indexOfMergedArray)->dado.dados = lista1Int.Recupera(indexOfSubArrayOne);
-            indexOfSubArrayOne++;
+    while (indiceSubLista1 < subLista1 && indiceSubLista2 < subLista2) {
+        if (compara(lista1.Recupera(indiceSubLista1), lista2.Recupera(indiceSubLista2)) == true) {
+            lista->RecuperaPonteiro(indiceListaMeio)->dado.nome = lista1.Recupera(indiceSubLista1);
+            lista->RecuperaPonteiro(indiceListaMeio)->dado.dados = lista1Int.Recupera(indiceSubLista1);
+            indiceSubLista1++;
         }
         else {
-            lista->RecuperaPonteiro(indexOfMergedArray)->dado.nome = lista2.Recupera(indexOfSubArrayTwo);
-            lista->RecuperaPonteiro(indexOfMergedArray)->dado.dados = lista2Int.Recupera(indexOfSubArrayTwo);
-            indexOfSubArrayTwo++;
+            lista->RecuperaPonteiro(indiceListaMeio)->dado.nome = lista2.Recupera(indiceSubLista2);
+            lista->RecuperaPonteiro(indiceListaMeio)->dado.dados = lista2Int.Recupera(indiceSubLista2);
+            indiceSubLista2++;
         }
-        indexOfMergedArray++;
+        indiceListaMeio++;
     }
 
-    while (indexOfSubArrayOne < subArrayOne) {
-        lista->RecuperaPonteiro(indexOfMergedArray)->dado.nome = lista1.Recupera(indexOfSubArrayOne);
-        lista->RecuperaPonteiro(indexOfMergedArray)->dado.dados = lista1Int.Recupera(indexOfSubArrayOne);
-        indexOfSubArrayOne++;
-        indexOfMergedArray++;
+    while (indiceSubLista1 < subLista1) {
+        lista->RecuperaPonteiro(indiceListaMeio)->dado.nome = lista1.Recupera(indiceSubLista1);
+        lista->RecuperaPonteiro(indiceListaMeio)->dado.dados = lista1Int.Recupera(indiceSubLista1);
+        indiceSubLista1++;
+        indiceListaMeio++;
     }
 
-    while (indexOfSubArrayTwo < subArrayTwo) {
-        lista->RecuperaPonteiro(indexOfMergedArray)->dado.nome = lista2.Recupera(indexOfSubArrayTwo);
-        lista->RecuperaPonteiro(indexOfMergedArray)->dado.dados = lista2Int.Recupera(indexOfSubArrayTwo);
-        indexOfSubArrayTwo++;
-        indexOfMergedArray++;
+    while (indiceSubLista2 < subLista2) {
+        lista->RecuperaPonteiro(indiceListaMeio)->dado.nome = lista2.Recupera(indiceSubLista2);
+        lista->RecuperaPonteiro(indiceListaMeio)->dado.dados = lista2Int.Recupera(indiceSubLista2);
+        indiceSubLista2++;
+        indiceListaMeio++;
     }
 }
 
-void mergeSort(Fila<Linha>* lista, int const begin, int const end)
+void mergeSort(Fila<Linha>* lista, int  inicio, int  fim)
 {
-    if (begin >= end) {
+    if (inicio >= fim) {
         return;
     }
-    auto mid = begin + (end - begin) / 2;
-    mergeSort(lista, begin, mid);
-    mergeSort(lista, mid + 1, end);
-    merge(lista, begin, mid, end);
+    int meio = inicio + (fim - inicio) / 2;
+    mergeSort(lista, inicio, meio);
+    mergeSort(lista, meio + 1, fim);
+    merge(lista, inicio, meio, fim);
 }
 
 //merge sort fim
@@ -169,34 +152,32 @@ void mergeSort(Fila<Linha>* lista, int const begin, int const end)
 
 void heapify(Fila<Linha>* lista, int n, int i)
 {
-    int largest = i; 
+    int maior = i; 
     int l = 2 * i + 1; 
     int r = 2 * i + 2; 
 
-    if (l < n && lista->RecuperaPonteiro(l)->dado.dados > lista->RecuperaPonteiro(largest)->dado.dados)
-        largest = l;
+    if (l < n && lista->RecuperaPonteiro(l)->dado.dados > lista->RecuperaPonteiro(maior)->dado.dados)
+        maior = l;
 
-    if (r < n && lista->RecuperaPonteiro(r)->dado.dados > lista->RecuperaPonteiro(largest)->dado.dados)
-        largest = r;
+    if (r < n && lista->RecuperaPonteiro(r)->dado.dados > lista->RecuperaPonteiro(maior)->dado.dados)
+        maior = r;
 
-    if (largest != i) {
-        trocarInt(i, largest,lista);
-        heapify(lista, n, largest);
+    if (maior != i) {
+        trocar(i, maior,lista);
+        heapify(lista, n, maior);
     }
 }
 
 
 void heapSort(Fila<Linha> *lista, int n)
 {
-    // Build heap (rearrange array)
     for (int i = n / 2 - 1; i >= 0; i--)
         heapify(lista, n, i);
 
-    // One by one extract an element from heap
-    for (int i = n - 1; i >= 0; i--) {
-        // Move current root to end
-        trocarInt(0,i, lista);
 
+    for (int i = n - 1; i >= 0; i--) {
+        
+        trocar(0,i, lista);
         heapify(lista, i, 0);
     }
 }
@@ -207,15 +188,15 @@ void heapSort(Fila<Linha> *lista, int n)
 
 int getMax(Fila<Linha>* lista, int n)
 {
-    int mx = lista->RecuperaPonteiro(0)->dado.dados;
+    int maior = lista->RecuperaPonteiro(0)->dado.dados;
     for (int i = 1; i < n; i++)
-        if (lista->RecuperaPonteiro(i)->dado.dados > mx)
-            mx = lista->RecuperaPonteiro(i)->dado.dados;
-    return mx;
+        if (lista->RecuperaPonteiro(i)->dado.dados > maior)
+            maior = lista->RecuperaPonteiro(i)->dado.dados;
+    return maior;
 }
 
 
-void countSort(Fila<Linha>* lista, int n, int exp)
+void organizar(Fila<Linha>* lista, int n, int exp)
 {
     int *output = new int[n];
     int i, count[10] = { 0 };
@@ -241,7 +222,7 @@ void radixsort(Fila<Linha>* lista, int n)
     int m = getMax(lista, n);
 
     for (int exp = 1; m / exp > 0; exp *= 10)
-        countSort(lista, n, exp);
+        organizar(lista, n, exp);
 }
 
 
@@ -304,8 +285,8 @@ int main()
     }
 
     //radixsort(&linhas, listaNomes.Tamanho());
-    heapSort(&linhas, 10);
-    mergeSort(&linhas, 0, listaNomes.Tamanho()-1);
+    //heapSort(&linhas, 10);
+    //mergeSort(&linhas, 0, listaNomes.Tamanho()-1);
     
     //radixsort(&linhas, listaNomes.Tamanho());
     //quickSort(&linhas,0,listaNomes.Tamanho()-1);
